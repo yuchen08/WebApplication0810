@@ -1,0 +1,64 @@
+﻿@page
+@model WebApplication0810.Pages.ChatDemoModel
+@{
+    <!DOCTYPE html>
+    <html lang="zh-TW">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>問答系統</title>
+        <style>
+            /* 基本樣式，使頁面在手機與桌面上顯示良好 */
+            body {
+                font-family: Arial, sans-serif;
+                margin: 20px;
+            }
+            .container {
+                max-width: 600px;
+                margin: auto;
+                padding: 20px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
+            .input-group {
+                margin-bottom: 20px;
+            }
+            #answer {
+                margin-top: 20px;
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>問答系統</h1>
+            <div class="input-group">
+                <label for="question">請輸入問題：</label>
+                <input type="text" id="question" placeholder="例如：今天的天氣如何？" style="width: 100%;">
+            </div>
+            <button onclick="getAnswer()">發送</button>
+            <div id="answer">答案會顯示在這裡</div>
+        </div>
+
+        <script>
+            async function getAnswer() {
+                const question = document.getElementById('question').value;
+
+                // 清空舊的答案
+                document.getElementById('answer').innerText = "正在獲取答案...";
+
+                try {
+                    const response = await fetch(`/api/Ollama/${encodeURIComponent(question)}`);
+                    if (!response.ok) {
+                        throw new Error('API 回應失敗');
+                    }
+                    const answer = await response.text();
+                    document.getElementById('answer').innerText = answer;
+                } catch (error) {
+                    document.getElementById('answer').innerText = `出錯了: ${error.message}`;
+                }
+            }
+        </script>
+    </body>
+    </html>
+}
